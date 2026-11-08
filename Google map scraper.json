@@ -1,0 +1,606 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Enter the place and business type you want to scrape",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Enter the location"
+            },
+            {
+              "fieldLabel": "Enter the business Type"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2256315d-75df-4eba-8378-6001640e4d3e",
+      "name": "On form submission",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -112,
+        -16
+      ],
+      "webhookId": "264fbda5-e6bd-45f6-8d1d-4e3cd449df82"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.results",
+        "options": {}
+      },
+      "id": "f9631270-ec89-4bbc-8185-35dd660f2c25",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "9fdd3c71-f51c-4f02-b960-34dfcedd3440",
+              "leftValue": "={{ $json.website }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "id": "ffbb857e-3a82-4e5a-b666-056934415156",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        416,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "e7f9ae77-0a5b-46ee-a0be-b0d1e45ad891",
+              "leftValue": "={{ $json.email_status }}",
+              "rightValue": "Not Found",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4172d5b7-4619-410d-a54f-ac0adc66aa3a",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        960,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://google-map-scraper1.p.rapidapi.com/api/places/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $json['Enter the location'] }}{{ $json['Enter the business Type'] }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-rapidapi-host",
+              "value": "google-map-scraper1.p.rapidapi.com"
+            },
+            {
+              "name": "x-rapidapi-key",
+              "value": "ef21bd2b44msh05e52923577fcc6p1b2650jsn860e14bae05a"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7f71d25b-80f2-44ec-a675-6058d7de9487",
+      "name": "Scrapping google map",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        64,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1chHLTarSFYiUV3oq9gRHcfFccxTe01EhS2PC0PNwr6k",
+          "mode": "list",
+          "cachedResultName": "Leads Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1chHLTarSFYiUV3oq9gRHcfFccxTe01EhS2PC0PNwr6k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1028016113,
+          "mode": "list",
+          "cachedResultName": "website leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1chHLTarSFYiUV3oq9gRHcfFccxTe01EhS2PC0PNwr6k/edit#gid=1028016113"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name_of_business": "={{ $json.name }}",
+            "phone_number": "={{ $json.phone_number }}",
+            "address": "={{ $json.address }}",
+            "URL": "={{ $json.url }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "name_of_business",
+              "displayName": "name_of_business",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "address",
+              "displayName": "address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        720,
+        -240
+      ],
+      "id": "f786e34c-9ff9-4461-bd94-53b9e19b1a09",
+      "name": "Having No website",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "r8hg537x61wh2dA2",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1chHLTarSFYiUV3oq9gRHcfFccxTe01EhS2PC0PNwr6k",
+          "mode": "list",
+          "cachedResultName": "Leads Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1chHLTarSFYiUV3oq9gRHcfFccxTe01EhS2PC0PNwr6k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1242900824,
+          "mode": "list",
+          "cachedResultName": "Website issues leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1chHLTarSFYiUV3oq9gRHcfFccxTe01EhS2PC0PNwr6k/edit#gid=1242900824"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email ": "={{ $json.email }}",
+            "name_of_business": "={{ $('Split Out').item.json.name }}",
+            "phone_number": "={{ $('Split Out').item.json.phone_number }}",
+            "address": "={{ $('Split Out').item.json.address }}",
+            "URL": "={{ $('Split Out').item.json.url }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "name_of_business",
+              "displayName": "name_of_business",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "address",
+              "displayName": "address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email ",
+              "displayName": "email ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "website",
+              "displayName": "website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1344,
+        -80
+      ],
+      "id": "bdc3eae3-9415-4750-ab09-0dc81f869c92",
+      "name": "Website issue leads",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "r8hg537x61wh2dA2",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search?engine=google",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "google"
+            },
+            {
+              "name": "q",
+              "value": "={{ '\"' + $json.name + '\" email contact' }}"
+            },
+            {
+              "name": "api_key",
+              "value": "725fb333f0104a254d693c74a512df411e72e57dfddaaf13987038f8ab7f591d"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "97ce0581-b185-4296-9c59-4d9e2939d73c",
+      "name": "Serp Ai",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        624,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "\nconst results = $json.organic_results || [];\n\nconst textToSearch = results.map(result =>\n  `${result.title || ''} ${result.snippet || ''} ${result.link || ''}`\n).join(' ');\n\nconst matches = textToSearch.match(\n  /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/g\n) || [];\n\nconst emails = [...new Set(\n  matches.map(email => email.toLowerCase())\n)];\n\nreturn {\n  json: {\n    email: emails.join(', '),\n    email_count: emails.length,\n    email_status: emails.length ? 'Found' : 'Not Found',\n    email_source: 'SerpAPI'\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        784,
+        64
+      ],
+      "id": "16af5f53-b4bf-4a90-8198-cb1febbb83c4",
+      "name": "Again checking for email"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1chHLTarSFYiUV3oq9gRHcfFccxTe01EhS2PC0PNwr6k",
+          "mode": "list",
+          "cachedResultName": "Leads Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1chHLTarSFYiUV3oq9gRHcfFccxTe01EhS2PC0PNwr6k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "=gid=0",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name_of_business": "={{ $('Split Out').item.json.name }}",
+            "phone_number": "={{ $('Split Out').item.json.phone_number }}",
+            "address": "={{ $('Split Out').item.json.address }}",
+            "website": "={{ $('Split Out').item.json.website }}",
+            "URL": "={{ $('Split Out').item.json.url }}",
+            "email ": "={{ $json.email }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "name_of_business",
+              "displayName": "name_of_business",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "address",
+              "displayName": "address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email ",
+              "displayName": "email ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "website",
+              "displayName": "website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "d1a39c4f-5ef1-4272-9471-420822272e82",
+      "name": "Agentic Leads",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1168,
+        144
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "r8hg537x61wh2dA2",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Scrapping google map",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Having No website",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Serp Ai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Website issue leads",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agentic Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrapping google map": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Serp Ai": {
+      "main": [
+        [
+          {
+            "node": "Again checking for email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Again checking for email": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agentic Leads": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "99aeae6e-210c-4f53-be5e-f764365e4d7b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "77ca193effd003bd29038129e684bfadd747ee085ae2e245cec9be504cb025ba"
+  },
+  "nodeGroups": [],
+  "id": "tgo5JhkSUoLI5NIO",
+  "tags": []
+}
